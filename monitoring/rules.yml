@@ -1,0 +1,50 @@
+groups:
+  - name: arcade-alerts
+    rules:
+
+      # 1. Service indisponible
+      - alert: ServiceDown
+        expr: up{job="arcade-api"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "API Arcade indisponible"
+          description: "L'API ne répond plus depuis plus de 30 secondes."
+
+      # 2. Latence p95 élevée (> 500ms)
+      - alert: HighLatencyP95
+        expr: |
+          histogram_quantile(0.95,
+            rate(http_request_duration_seconds_bucket[2m])
+          ) > 0.5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latence p95 élevée (> 500ms)"
+          description: "Le 95e percentile de latence dépasse 500ms depuis 1 minute."
+
+      # 3. Taux d'erreurs 5xx élevé (> 5%)
+      - alert: HighErrorRate
+        expr: |
+          rate(http_requests_total{status=~"5.."}[2m])
+          /
+          rate(http_requests_total[2m]) > 0.05
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Taux d'erreurs 5xx > 5%"
+          description: "Plus de 5% des requêtes retournent une erreur serveur."
+
+      # 4. Pic de triche (trop de rejets)
+      - alert: CheatAttemptSpike
+        expr: |
+          rate(scores_rejected_total[2m]) > 5
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pic de tentatives de triche détecté"
+          description: "Plus de 5 scores rejetés par seconde sur les 2 dernières minutes."
