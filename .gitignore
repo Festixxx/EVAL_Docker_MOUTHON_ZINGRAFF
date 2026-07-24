@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+data/scores.db
+.pytest_cache/
+.coverage
+coverage.xml
+subject_project/
+Evaluation_Cyber_2026/
