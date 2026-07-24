@@ -1,5 +1,3 @@
-# Retro Arcade Leaderboard 🕹️
-
 Projet DevOps – évaluation Cyber 2026.
 
 L'API (Python/FastAPI) était fournie. On a mis en place tout ce qui l'entoure : CI, Docker, monitoring, alertes et test de charge.
